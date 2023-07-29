@@ -1,0 +1,173 @@
+# https://community.home-assistant.io/t/modbus-data-from-sma-inverter/122425/257
+# Using https://github.com/InfernoEmbedded/PowerScraper as a basis for the Modbus registers used on SMA Inverters.
+# I created this as I am using the Ethernet port on the Inverter for Modnbus over TCP as the web API is unavailable.
+# But the Inverter can communicate to the cloud ok somehow? I do not have a Pocket WiFi module.
+# Only tested with ModBus over TCP, no reason why USB - RS485 shouldn't work
+
+modbus:
+  - name: SMA
+    type: tcp 
+    host: 192.168.0.254 ## or create !secret inverter_ip with ip adress
+    port: 502 
+    delay: 5    
+    timeout: 5
+    close_comm_on_error: true
+
+    sensors:
+      - name: North Actual
+        unique_id: fa400021001
+        unit_of_measurement: W
+        slave: 3
+        address: 30775
+        input_type: input
+        count: 2
+        data_type: int32
+        min_value: 0
+        device_class: power
+        state_class: measurement
+      - name: North Today
+        unique_id: fa400021002
+        unit_of_measurement: Wh
+        slave: 3
+        address: 30517
+        count: 4
+        data_type: int64
+        min_value: 0
+        device_class: energy
+        state_class: total_increasing
+      - name: North Total
+        unique_id: fa400021003
+        unit_of_measurement: kWh
+        slave: 3
+        address: 30531
+        input_type: input
+        count: 2
+        data_type: int32
+        min_value: 0
+        device_class: energy
+        state_class: total_increasing
+      - name: North DC Voltage 1
+        unique_id: fa400021004
+        unit_of_measurement: V
+        slave: 3
+        address: 30771
+        input_type: input
+        count: 2
+        scale: 0.01
+        precision: 2
+        data_type: int32
+        min_value: 0
+        device_class: voltage
+        state_class: measurement
+      - name: North DC Current 1
+        unique_id: fa400021005
+        unit_of_measurement: A
+        slave: 3
+        address: 30769
+        input_type: input
+        count: 2
+        scale: 0.001
+        precision: 3
+        data_type: int32
+        min_value: 0
+        device_class: current
+        state_class: measurement
+      - name: North DC Power 1
+        unique_id: fa400021006
+        unit_of_measurement: W
+        slave: 3
+        address: 30773
+        input_type: input
+        count: 2
+        data_type: int32
+        min_value: 0
+        device_class: power
+        state_class: measurement
+      - name: North DC Voltage 2
+        unique_id: fa400021007
+        unit_of_measurement: V
+        slave: 3
+        address: 30959
+        input_type: input
+        count: 2
+        scale: 0.01
+        precision: 2
+        data_type: int32
+        min_value: 0
+        device_class: voltage
+        state_class: measurement
+      - name: North DC Current 2
+        unique_id: fa400021008
+        unit_of_measurement: A
+        slave: 3
+        address: 30957
+        input_type: input
+        count: 2
+        scale: 0.001
+        precision: 3
+        data_type: int32
+        min_value: 0
+        device_class: current
+        state_class: measurement
+      - name: North DC Power 2
+        unique_id: fa400021009
+        unit_of_measurement: W
+        slave: 3
+        address: 30961
+        input_type: input
+        count: 2
+        data_type: int32
+        min_value: 0
+        device_class: power
+        state_class: measurement
+      - name: North temperature
+        unique_id: fa400021010
+        unit_of_measurement: °C
+        slave: 3
+        address: 30953
+        input_type: input
+        count: 2
+        scale: 0.1
+        precision: 1
+        data_type: int32
+        min_value: 0
+        device_class: temperature
+        state_class: measurement
+      - name: North earthleakage
+        unique_id: fa400021011
+        unit_of_measurement: A
+        slave: 3
+        address: 30225
+        input_type: input
+        count: 2
+        scale: 0.001
+        precision: 3
+        data_type: int32
+        min_value: 0
+        device_class: current
+        state_class: measurement
+
+input_number:
+  north_power_limit_slider:
+    name: North Power Limit Slider
+    initial: 100
+    min: 0
+    max: 100
+    step: 1
+
+automation:
+  - alias: North Power Limit
+    id: fa400021012
+    description: ''
+    trigger:
+      - platform: state
+        entity_id: input_number.north_power_limit_slider
+    condition: []
+    action:
+      - service: modbus.write_register
+        data:
+          address: 40016
+          slave: 3
+          value: '{{ states("input_number.north_power_limit_slider") }}'
+          hub: SMA
+    mode: single
