@@ -5,13 +5,14 @@
 # Only tested with ModBus over TCP, no reason why USB - RS485 shouldn't work
 
 modbus:
-  - name: SMA
+  - name: SMA3
     type: tcp 
     host: 192.168.0.254 ## or create !secret inverter_ip with ip adress
     port: 502 
-    delay: 5    
+    delay: 5
+    message_wait_milliseconds: 600
+    retries: 3
     timeout: 5
-    close_comm_on_error: true
 
     sensors:
       - name: North Actual
@@ -20,7 +21,6 @@ modbus:
         slave: 3
         address: 30775
         input_type: input
-        count: 2
         data_type: int32
         min_value: 0
         device_class: power
@@ -30,7 +30,6 @@ modbus:
         unit_of_measurement: Wh
         slave: 3
         address: 30517
-        count: 4
         data_type: int64
         min_value: 0
         device_class: energy
@@ -41,7 +40,6 @@ modbus:
         slave: 3
         address: 30531
         input_type: input
-        count: 2
         data_type: int32
         min_value: 0
         device_class: energy
@@ -52,7 +50,6 @@ modbus:
         slave: 3
         address: 30771
         input_type: input
-        count: 2
         scale: 0.01
         precision: 2
         data_type: int32
@@ -65,7 +62,6 @@ modbus:
         slave: 3
         address: 30769
         input_type: input
-        count: 2
         scale: 0.001
         precision: 3
         data_type: int32
@@ -78,7 +74,6 @@ modbus:
         slave: 3
         address: 30773
         input_type: input
-        count: 2
         data_type: int32
         min_value: 0
         device_class: power
@@ -89,7 +84,6 @@ modbus:
         slave: 3
         address: 30959
         input_type: input
-        count: 2
         scale: 0.01
         precision: 2
         data_type: int32
@@ -102,7 +96,6 @@ modbus:
         slave: 3
         address: 30957
         input_type: input
-        count: 2
         scale: 0.001
         precision: 3
         data_type: int32
@@ -115,7 +108,6 @@ modbus:
         slave: 3
         address: 30961
         input_type: input
-        count: 2
         data_type: int32
         min_value: 0
         device_class: power
@@ -126,7 +118,6 @@ modbus:
         slave: 3
         address: 30953
         input_type: input
-        count: 2
         scale: 0.1
         precision: 1
         data_type: int32
@@ -139,7 +130,6 @@ modbus:
         slave: 3
         address: 30225
         input_type: input
-        count: 2
         scale: 0.001
         precision: 3
         data_type: int32
@@ -170,5 +160,5 @@ automation:
           address: 40016
           slave: 3
           value: '{{ states("input_number.north_power_limit_slider") }}'
-          hub: SMA
+          hub: SMA3
     mode: single
