@@ -57,8 +57,20 @@ modbus:
         min_value: 0
         device_class: voltage
         state_class: measurement
-      - name: SMA DC Spanning 1
+      - name: SMA AC Frequentie
         unique_id: fa600021005
+        unit_of_measurement: Hz
+        slave: 3
+        address: 30803
+        input_type: input
+        scale: 0.01
+        precision: 2
+        data_type: int32
+        min_value: 0
+        device_class: frequency
+        state_class: measurement
+      - name: SMA DC Spanning 1
+        unique_id: fa600021006
         unit_of_measurement: V
         slave: 3
         address: 30771
@@ -70,7 +82,7 @@ modbus:
         device_class: voltage
         state_class: measurement
       - name: SMA DC Stroom 1
-        unique_id: fa600021006
+        unique_id: fa600021007
         unit_of_measurement: A
         slave: 3
         address: 30769
@@ -82,7 +94,7 @@ modbus:
         device_class: current
         state_class: measurement
       - name: SMA DC Power 1
-        unique_id: fa600021007
+        unique_id: fa600021008
         unit_of_measurement: W
         slave: 3
         address: 30773
@@ -92,7 +104,7 @@ modbus:
         device_class: power
         state_class: measurement
       - name: SMA DC Spanning 2
-        unique_id: fa600021008
+        unique_id: fa600021009
         unit_of_measurement: V
         slave: 3
         address: 30959
@@ -104,7 +116,7 @@ modbus:
         device_class: voltage
         state_class: measurement
       - name: SMA DC Stroom 2
-        unique_id: fa600021009
+        unique_id: fa600021010
         unit_of_measurement: A
         slave: 3
         address: 30957
@@ -116,7 +128,7 @@ modbus:
         device_class: current
         state_class: measurement
       - name: SMA DC Power 2
-        unique_id: fa600021010
+        unique_id: fa600021011
         unit_of_measurement: W
         slave: 3
         address: 30961
@@ -126,7 +138,7 @@ modbus:
         device_class: power
         state_class: measurement
       - name: SMA temperatuur
-        unique_id: fa600021011
+        unique_id: fa600021012
         unit_of_measurement: °C
         slave: 3
         address: 30953
@@ -138,7 +150,7 @@ modbus:
         device_class: temperature
         state_class: measurement
       - name: SMA isolatieweerstand
-        unique_id: fa600021012
+        unique_id: fa600021013
         unit_of_measurement: Ohm
         slave: 3
         address: 30225
@@ -150,7 +162,7 @@ modbus:
 ##        device_class: resistance
         state_class: measurement
       - name: SMA aardlekkage
-        unique_id: fa600021013
+        unique_id: fa600021014
         unit_of_measurement: A
         slave: 3
         address: 31247
