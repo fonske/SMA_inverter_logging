@@ -40,7 +40,7 @@ modbus:
         address: 30531
         input_type: input
         scale: 1.0
-        precision: 3
+        precision: 0
         data_type: int32
         min_value: 0
         device_class: energy
