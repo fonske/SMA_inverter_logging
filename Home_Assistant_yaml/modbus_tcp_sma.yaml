@@ -5,9 +5,9 @@
 # Only tested with ModBus over TCP, no reason why USB - RS485 shouldn't work
 
 modbus:
-  - name: SMA1
+  - name: SMA
     type: tcp 
-    host: 192.168.100.35 ## or create !secret inverter_ip with ip adress
+    host: 192.168.1.135 ## or create !secret inverter_ip with ip adress
     port: 502 
     delay: 5
     message_wait_milliseconds: 600
