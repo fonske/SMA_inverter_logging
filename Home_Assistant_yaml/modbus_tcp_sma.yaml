@@ -7,7 +7,7 @@
 modbus:
   - name: SMA1
     type: tcp 
-    host: 192.168.1.135 ## or create !secret inverter_ip with ip adress
+    host: 192.168.0.104 ## or create !secret inverter_ip with ip adress
     port: 502 
     delay: 5
     message_wait_milliseconds: 600
@@ -15,7 +15,7 @@ modbus:
 
     sensors:
       - name: SMA Actueel
-        unique_id: fa600021001
+        unique_id: sma_actueel
         unit_of_measurement: W
         slave: 3
         address: 30775
@@ -25,7 +25,7 @@ modbus:
         device_class: power
         state_class: measurement
       - name: SMA Vandaag
-        unique_id: fa600021002
+        unique_id: sma_vandaag
         unit_of_measurement: Wh
         slave: 3
         address: 30517
@@ -34,7 +34,7 @@ modbus:
         device_class: energy
         state_class: total_increasing
       - name: SMA Totaal
-        unique_id: fa600021003
+        unique_id: sma_totaal
         unit_of_measurement: kWh
         slave: 3
         address: 30531
@@ -46,7 +46,7 @@ modbus:
         device_class: energy
         state_class: total_increasing
       - name: SMA AC Spanning
-        unique_id: fa600021004
+        unique_id: sma_ac_spanning
         unit_of_measurement: V
         slave: 3
         address: 30783
@@ -58,7 +58,7 @@ modbus:
         device_class: voltage
         state_class: measurement
       - name: SMA AC Frequentie
-        unique_id: fa600021005
+        unique_id: sma_ac_frequentie
         unit_of_measurement: Hz
         slave: 3
         address: 30803
@@ -70,7 +70,7 @@ modbus:
         device_class: frequency
         state_class: measurement
       - name: SMA DC Spanning 1
-        unique_id: fa600021006
+        unique_id: sma_dc_spanning_1
         unit_of_measurement: V
         slave: 3
         address: 30771
@@ -82,7 +82,7 @@ modbus:
         device_class: voltage
         state_class: measurement
       - name: SMA DC Stroom 1
-        unique_id: fa600021007
+        unique_id: sma_dc_stroom_1
         unit_of_measurement: A
         slave: 3
         address: 30769
@@ -94,7 +94,7 @@ modbus:
         device_class: current
         state_class: measurement
       - name: SMA DC Power 1
-        unique_id: fa600021008
+        unique_id: sma_dc_power_1
         unit_of_measurement: W
         slave: 3
         address: 30773
@@ -104,7 +104,7 @@ modbus:
         device_class: power
         state_class: measurement
       - name: SMA DC Spanning 2
-        unique_id: fa600021009
+        unique_id: sma_dc_spanning_2
         unit_of_measurement: V
         slave: 3
         address: 30959
@@ -116,7 +116,7 @@ modbus:
         device_class: voltage
         state_class: measurement
       - name: SMA DC Stroom 2
-        unique_id: fa600021010
+        unique_id: sma_dc_stroom_2
         unit_of_measurement: A
         slave: 3
         address: 30957
@@ -128,7 +128,7 @@ modbus:
         device_class: current
         state_class: measurement
       - name: SMA DC Power 2
-        unique_id: fa600021011
+        unique_id: sma_dc_power_2
         unit_of_measurement: W
         slave: 3
         address: 30961
@@ -138,7 +138,7 @@ modbus:
         device_class: power
         state_class: measurement
       - name: SMA temperatuur
-        unique_id: fa600021012
+        unique_id: sma_temperatuur
         unit_of_measurement: °C
         slave: 3
         address: 30953
@@ -150,7 +150,7 @@ modbus:
         device_class: temperature
         state_class: measurement
       - name: SMA isolatieweerstand
-        unique_id: fa600021013
+        unique_id: sma_isolatieweerstand
         unit_of_measurement: Ohm
         slave: 3
         address: 30225
@@ -162,7 +162,7 @@ modbus:
 ##        device_class: resistance
         state_class: measurement
       - name: SMA aardlekkage
-        unique_id: fa600021014
+        unique_id: sma_aardlekkage
         unit_of_measurement: A
         slave: 3
         address: 31247
@@ -172,6 +172,17 @@ modbus:
         data_type: int32
         min_value: 0
         device_class: current
+        state_class: measurement
+      - name: SMA limit percent
+        unique_id: sma_limit_percent
+        unit_of_measurement: "%"
+        slave: 3
+        address: 41255
+        input_type: holding
+        data_type: int16
+        min_value: 0
+        scale: 0.01
+        precision: 0
         state_class: measurement
 
 input_number:
@@ -185,7 +196,7 @@ input_number:
 
 automation:
   - alias: SMA Power Limiet
-    id: fa600021012
+    id: sma_power_limiet
     description: ''
     trigger:
       - platform: state
