@@ -210,3 +210,20 @@ automation:
           value: '{{ states("input_number.sma_power_limiet_slider") }}'
           hub: SMA1
     mode: single
+
+### or use:
+#automation:
+#  alias: Power Limit
+#  description: ''
+#  trigger:
+#    - platform: state
+#      entity_id: input_number.sma_power_limiet_slider
+#  condition: []
+#  action:
+#    - service: modbus.write_register
+#      data:
+#        address: 40023
+#        slave: 3
+#        value: '{{ states("input_number.sma_power_limiet_slider") |int *100 }}'
+#        hub: SMA1  # unieke naam
+#  mode: single
