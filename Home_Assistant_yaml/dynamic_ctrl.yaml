@@ -1,0 +1,52 @@
+## Dynamic control SMA inverter automation
+input_boolean:
+  dynamic_control_bool:
+    name: "Dynamic control SMA"
+    icon: mdi:transmission-tower-export
+    #initial: off
+
+input_number:
+  dynamic_price_limit:
+    name: "Dynamic price limit"
+    initial: -0.1
+    min: -1.0
+    max: 1.0
+    step: 0.05
+    unit_of_measurement: ""
+    icon: mdi:currency-eur
+    mode: box
+
+automation:
+  id: dynamic_control_inverter
+  alias: Dynamic control inverter
+  description: ''
+  trigger:
+  - platform: time_pattern
+    seconds: /10
+  condition:
+  - condition: state
+    entity_id: input_boolean.dynamic_control_bool
+    state: "on"
+  action:
+  - variables:
+      dynamic_price_limit: '{{ states("input_number.dynamic_price_limit") | float }}'
+      sma_slider_entity: input_number.sma_power_limit_slider
+      dynamic_price: '{{ states("sensor.current_electricity_price_all_in") |float (default=0) }}'
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ dynamic_price > dynamic_price_limit }}'
+      sequence:
+      - service: input_number.set_value
+        data_template:
+          entity_id: '{{ sma_slider_entity }}'
+          value: 100
+    - conditions:
+      - condition: template
+        value_template: '{{ dynamic_price < dynamic_price_limit }}'
+      sequence:
+      - service: input_number.set_value
+        data_template:
+          entity_id: '{{ sma_slider_entity }}'
+          value: 0
+  mode: single
