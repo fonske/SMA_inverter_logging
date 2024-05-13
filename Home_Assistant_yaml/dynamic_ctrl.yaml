@@ -31,7 +31,7 @@ automation:
   - variables:
       dynamic_price_limit: '{{ states("input_number.dynamic_price_limit") | float }}'
       sma_slider_entity: input_number.sma_power_limit_slider  
-      #multiple inverter: [ input_number.sma_power_limit_slider_1, input_number.sma_power_limit_slider_2 ]
+     #multiple inverter change to [ input_number.sma_power_limit_slider_1, input_number.sma_power_limit_slider_2 ]
       dynamic_price: '{{ states("sensor.current_electricity_price_all_in") |float (default=0) }}'
   - choose:
     - conditions:
