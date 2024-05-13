@@ -186,8 +186,8 @@ modbus:
         state_class: measurement
 
 input_number:
-  sma_power_limiet_slider:
-    name: SMA Power Limiet Slider
+  sma_power_limit_slider:
+    name: SMA Power Limit Slider
     initial: 100
     min: 0
     max: 100
@@ -195,20 +195,20 @@ input_number:
     unit_of_measurement: "%"
 
 automation:
-  - alias: SMA Power Limiet
-    id: sma_power_limiet
+  - alias: SMA Power Limit
+    id: sma_power_limit
     description: ''
     trigger:
       - platform: state
-        entity_id: input_number.sma_power_limiet_slider
+        entity_id: input_number.sma_power_limit_slider
     condition: []
     action:
       - service: modbus.write_register
         data:
           address: 40016
           slave: 3
-          value: '{{ states("input_number.sma_power_limiet_slider") }}'
-          hub: SMA1
+          value: '{{ states("input_number.sma_power_limit_slider") }}'
+          hub: SMA1 # unique name
     mode: single
 
 ### or use:
@@ -217,13 +217,13 @@ automation:
 #  description: ''
 #  trigger:
 #    - platform: state
-#      entity_id: input_number.sma_power_limiet_slider
+#      entity_id: input_number.sma_power_limit_slider
 #  condition: []
 #  action:
 #    - service: modbus.write_register
 #      data:
 #        address: 40023
 #        slave: 3
-#        value: '{{ states("input_number.sma_power_limiet_slider") |int *100 }}'
-#        hub: SMA1  # unieke naam
+#        value: '{{ states("input_number.sma_power_limit_slider") |int *100 }}'
+#        hub: SMA1  # unique name
 #  mode: single
