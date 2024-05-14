@@ -1,0 +1,129 @@
+## Feedback control with 3 SMA inverter automation
+input_boolean:
+  feedback_control_bool:
+    name: "Feedback control SMA"
+    icon: mdi:transmission-tower-export
+    #initial: off
+
+input_number:
+  feedback_max_limit:
+    name: "Feedback_max_limit"
+#    initial: -2000
+    min: -6000
+    max: -1
+    step: 100
+    unit_of_measurement: W
+    icon: mdi:timer-outline
+  feedback_min_limit:
+    name: "Feedback_min_limit"
+#    initial: -200
+    min: -6000
+    max: -1
+    step: 100
+    unit_of_measurement: W
+    icon: mdi:timer-outline
+  feedback_step:
+    name: "Feedback_step"
+#    initial: 10
+    min: 1
+    max: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:timer-outline
+
+automation:
+  id: feedback_control_inverter
+  alias: Feedback Control inverter
+  description: ''
+  trigger:
+  - platform: time_pattern
+    seconds: /10
+    id: timed
+  - platform: state
+    entity_id: input_boolean.feedback_control_bool
+    to: 'off'
+    id: return_to_100
+  action:
+  - variables:
+      feedback_max_limit: '{{ states("input_number.feedback_max_limit") | float }}'
+      feedback_min_limit: '{{ states("input_number.feedback_min_limit") | float }}'  
+      feedback_step: '{{ states("input_number.feedback_step") | float }}'
+      sma_slider_entity1: input_number.power_limit_slider_sma_zb
+      sma_slider_entity2: input_number.power_limit_slider_sma_zo
+      sma_slider_entity3: input_number.power_limit_slider_sma_nrd
+      grid_feedback: '{{ states("sensor.p1_meter_active_power") | float (default=0) }}' #active power delivered is negativ number on my P1 meter HW wifi.
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - timed
+      - condition: state
+        entity_id: input_boolean.feedback_control_bool
+        state: 'on'
+      - condition: template
+        value_template: '{{ grid_feedback < feedback_max_limit }}'
+      sequence:
+      - service: input_number.set_value
+        data_template:
+          entity_id: '{{ sma_slider_entity1 }}'
+          value: '{{ states(sma_slider_entity1) | float - feedback_step }}'
+      - service: input_number.set_value
+        data_template:
+          entity_id: '{{ sma_slider_entity2 }}'
+          value: '{{ states(sma_slider_entity2) | float - feedback_step }}'
+      - service: input_number.set_value
+        data_template:
+          entity_id: '{{ sma_slider_entity3 }}'
+          value: '{{ states(sma_slider_entity3) | float - feedback_step }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - timed
+      - condition: state
+        entity_id: input_boolean.feedback_control_bool
+        state: 'on'
+      - condition: template
+        value_template: '{{ grid_feedback > feedback_min_limit }}'
+      sequence:
+      - service: input_number.set_value
+        data_template:
+          entity_id: '{{ sma_slider_entity1 }}'
+          value: '{{ states(sma_slider_entity1) | float + feedback_step }}'
+      - service: input_number.set_value
+        data_template:
+          entity_id: '{{ sma_slider_entity2 }}'
+          value: '{{ states(sma_slider_entity2) | float + feedback_step }}'
+      - service: input_number.set_value
+        data_template:
+          entity_id: '{{ sma_slider_entity3 }}'
+          value: '{{ states(sma_slider_entity3) | float + feedback_step }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - return_to_100
+      sequence:
+      - repeat:
+          sequence:
+          - service: input_number.set_value
+            data_template:
+              entity_id: '{{ sma_slider_entity1 }}'
+              value: '{{ states(sma_slider_entity1) | float + feedback_step }}'
+          - service: input_number.set_value
+            data_template:
+              entity_id: '{{ sma_slider_entity2 }}'
+              value: '{{ states(sma_slider_entity2) | float + feedback_step }}'
+          - service: input_number.set_value
+            data_template:
+              entity_id: '{{ sma_slider_entity3 }}'
+              value: '{{ states(sma_slider_entity3) | float + feedback_step }}'
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 10
+          until:
+          - condition: template
+            value_template: '{{ states(sma_slider_entity1) | float(0) >99 }}'
+          - condition: template
+            value_template: '{{ states(sma_slider_entity2) | float(0) >99 }}'
+          - condition: template
+            value_template: '{{ states(sma_slider_entity3) | float(0) >99 }}'
