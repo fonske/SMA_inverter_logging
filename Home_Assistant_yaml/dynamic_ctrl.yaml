@@ -22,7 +22,7 @@ automation:
   description: ''
   trigger:
   - platform: state
-    entity_id: sensor.current_electricity_price_all_in     #choose 'Frank Energy' for example (hacs instal)
+    entity_id: sensor.current_electricity_price_all_in     #choose 'Frank Energie' for example (hacs instal)
     id: new_price
   - platform: state
     entity_id: input_boolean.dynamic_control_bool
