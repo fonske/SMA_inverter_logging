@@ -1,8 +1,6 @@
-# https://community.home-assistant.io/t/modbus-data-from-sma-inverter/122425/257
-# Using https://github.com/InfernoEmbedded/PowerScraper as a basis for the Modbus registers used on SMA Inverters.
-# I created this as I am using the Ethernet port on the Inverter for Modnbus over TCP as the web API is unavailable.
-# But the Inverter can communicate to the cloud ok somehow? I do not have a Pocket WiFi module.
-# Only tested with ModBus over TCP, no reason why USB - RS485 shouldn't work
+# SMA inverter logging modbus TCP/IP
+#
+# Revision: v1.01 18/5/2024
 
 modbus:
   - name: SMA1
@@ -173,6 +171,16 @@ modbus:
         min_value: 0
         device_class: current
         state_class: measurement
+      - name: SMA status
+        unique_id: sma_status
+        slave: 3
+        address: 30201
+        data_type: int32
+      - name: SMA grid
+        unique_id: sma_grid
+        slave: 3
+        address: 30217
+        data_type: uint32
       - name: SMA limit percent
         unique_id: sma_limit_percent
         unit_of_measurement: "%"
@@ -184,6 +192,57 @@ modbus:
         scale: 0.01
         precision: 0
         state_class: measurement
+
+sensor:
+  - platform: template
+    sensors:
+      sma_power:      
+        friendly_name: 'Power'
+        value_template: >-
+            {% if states('sensor.sma_actueel')|float < 0 or states('sensor.sma_actueel')|float > 10000 %}
+              0
+            {% else %}
+              {{ states('sensor.sma_actueel') }}
+            {% endif %}
+        unit_of_measurement: "W"
+        icon_template: mdi:flash-circle
+ 
+  - platform: template
+    sensors:
+      sma_energie_vandaag:      
+        friendly_name: 'Energie vandaag'
+        value_template: >-
+            {% if states('sensor.sma_vandaag')|float < 0 or states('sensor.sma_vandaag')|float > 10000 %}
+              0
+            {% else %}
+              {{ states('sensor.sma_vandaag') }}
+            {% endif %}
+        unit_of_measurement: "kWh"
+        icon_template: mdi:flash-circle
+
+      sma_inverter_status:        
+        friendly_name: 'Omvormer Status'
+        value_template: >-
+            {% if is_state('sensor.sma_status', '307' ) %}
+              OK
+            {% elif is_state('sensor.sma_status', '303' ) %}
+              Uit
+            {% elif is_state('sensor.sma_status', '455' ) %}
+              Waarschuwing
+            {% elif is_state('sensor.sma_status', '35' ) %}
+              Fout
+            {% endif %}
+        icon_template: mdi:state-machine
+
+      sma_grid_contactor:        
+        friendly_name: 'Grid relais'
+        value_template: >-
+            {% if is_state('sensor.sma_grid', '51' ) %}
+              Gesloten
+            {% else %}
+              Open
+            {% endif %}
+        icon_template: mdi:connection
 
 input_number:
   sma_power_limit_slider:
