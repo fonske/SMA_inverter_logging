@@ -5,7 +5,7 @@
 modbus:
   - name: SMA1
     type: tcp 
-    host: 192.168.0.104 ## or create !secret inverter_ip with ip adress
+    host: 192.168.100.35 ## or create !secret inverter_ip with ip adress
     port: 502 
     delay: 5
     message_wait_milliseconds: 600
@@ -24,7 +24,9 @@ modbus:
         state_class: measurement
       - name: SMA Vandaag
         unique_id: sma_vandaag
-        unit_of_measurement: Wh
+        unit_of_measurement: kWh
+        scale: 0.001
+        precision: 3
         slave: 3
         address: 30517
         data_type: int64
