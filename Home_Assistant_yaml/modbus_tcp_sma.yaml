@@ -207,7 +207,7 @@ sensor:
               {{ states('sensor.sma_actueel') }}
             {% endif %}
         unit_of_measurement: "W"
-        icon_template: mdi:flash-circle
+        icon_template: mdi:flash
  
   - platform: template
     sensors:
@@ -220,7 +220,7 @@ sensor:
               {{ states('sensor.sma_vandaag') }}
             {% endif %}
         unit_of_measurement: "kWh"
-        icon_template: mdi:flash-circle
+        icon_template: mdi:weather-sunny
 
       sma_inverter_status:        
         friendly_name: 'Omvormer Status'
@@ -248,7 +248,7 @@ sensor:
 
 input_number:
   sma_power_limit_slider:
-    name: SMA Power Limit Slider
+    name: SMA Power Limiet Slider
     initial: 100
     min: 0
     max: 100
