@@ -9,13 +9,19 @@ automation:
   id: feedback_control_sma
   alias: Feedback control SMA
   description: ""
-  mode: single
+  mode: parallel
   max_exceeded: silent
   trigger:
   - platform: state
     entity_id:
       - sensor.p1_meter_active_power
     from: null
+    id: feedback
+  - platform: state
+    entity_id: input_boolean.feedback_control_bool
+    from: 'on'
+    to: 'off'
+    id: return_to_100
   condition: []
   action:
   - choose:
@@ -41,3 +47,12 @@ automation:
           minutes: 0
           seconds: 10
           milliseconds: 0
+    - conditions:
+      - condition: trigger
+        id:
+        - return_to_100
+      sequence:
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.power_limit_slider_sma
+          value: 100
