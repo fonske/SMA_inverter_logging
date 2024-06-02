@@ -6,33 +6,36 @@ input_boolean:
     #initial: off
 
 automation:
-  description: ""
+  description: "Selfconsumption control SMA"
   mode: single
   max_exceeded: silent
   trigger:
-    - platform: state
-      entity_id:
-        - sensor.p1_meter_active_power
-      from: null
-  condition:
-    - platform: state
-      entity_id: input_boolean.selfconsumption_control_bool
-      state: 'on'
+  - platform: state
+    entity_id:
+      - sensor.p1_meter_active_power
+    from: null
+  condition: []
   action:
-    - service: number.set_value
-      metadata: {}
-      data:
-        value: >-
-          {% set p_max = 3.680 -%}
-          {% set p_act = states('sensor.p1_meter_active_power')|float(default=p_max)  -%}
-          {% set c = states('sensor.sma_zb_actueel')|float(default=p_max * 1000) / 1000 -%}
-          {% set s = p_max / 100 -%}
-          {% set n = (c - p_act) / s -%}
-          {{ max( min(n, 100), 0)|round(0, 'ceil') }}
-      target:
-        entity_id: number.power_limit_slider_sma_zb
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 10
-        milliseconds: 0
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.selfconsumption_control_bool
+        state: 'on'
+      sequence:
+      - service: number.set_value
+        metadata: {}
+        data:
+          value: >-
+            {% set p_max = 3680 -%}  //set to max power of the inverter
+            {% set p_act = states('sensor.p1_meter_active_power')|float(default=p_max)  -%}
+            {% set c = states('sensor.sma_actueel')|float(default=p_max) -%}
+            {% set s = p_max / 100 -%}
+            {% set n = ((c + p_act) / s) | abs -%}
+            {{ max( min(n, 100), 0)|round(0, 'ceil') }}
+        target:
+          entity_id: input_number.power_limit_slider_sma
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
