@@ -1,12 +1,14 @@
-## Feedback control with 3 SMA inverter automation
+## Feedback control with 1 SMA inverter automation
 input_boolean:
-  selfconsumption_control_bool:
-    name: "Selfconsumption control SMA"
+  feedback_control_bool:
+    name: "Feedback control SMA"
     icon: mdi:transmission-tower-export
     #initial: off
 
 automation:
-  description: "Selfconsumption control SMA"
+  id: feedback_control_sma
+  alias: Feedback control SMA
+  description: ""
   mode: single
   max_exceeded: silent
   trigger:
@@ -19,14 +21,14 @@ automation:
   - choose:
     - conditions:
       - condition: state
-        entity_id: input_boolean.selfconsumption_control_bool
+        entity_id: input_boolean.feedback_control_bool
         state: 'on'
       sequence:
-      - service: number.set_value
+      - service: input_number.set_value
         metadata: {}
         data:
           value: >-
-            {% set p_max = 3680 -%}  //set to max power of the inverter
+            {% set p_max = 3680 -%}
             {% set p_act = states('sensor.p1_meter_active_power')|float(default=p_max)  -%}
             {% set c = states('sensor.sma_actueel')|float(default=p_max) -%}
             {% set s = p_max / 100 -%}
