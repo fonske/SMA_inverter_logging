@@ -1,0 +1,36 @@
+## elke 5 minuten naar pvoutput
+automation:
+  - id: update_pvoutput
+    alias: update pvoutput
+    trigger:
+      platform: time_pattern
+      minutes: /5
+    condition:
+      and:
+        - condition: numeric_state
+          entity_id: sensor.sma_actueel
+          above: 10
+    action:
+      service: rest_command.update_pvoutput
+      data: {}
+    mode: single
+
+## v1 = Energy Generation (Wh) / v2 = Power Generation  (W) / v3 = Energy Production (Wh) / v4 = Power Production  (W) / v5 = Temperature (degr. C)
+rest_command:
+  update_pvoutput:
+    url: "https://pvoutput.org/service/r2/addstatus.jsp"
+    method: post
+    headers:
+      X-Pvoutput-Apikey: !secret pvoutput_api_key
+      X-Pvoutput-SystemId: !secret pvoutput_system_id_1
+      Content-Type: 'application/x-www-form-urlencoded'
+    payload: >-
+      d={{now().strftime("%Y%m%d")}}                                          {#- date -#}
+      &t={{now().strftime("%H:%M")}}                                          {#- time -#}
+      &v1={{states('sensor.sma_vandaag')|float(0)*1000 |round(0)}}            {#- Energy generation (Wh) -#}
+      &v2={{states('sensor.sma_actueel')|float(0) |round(0)}}                 {#- Power generation (W) -#}
+      &v7={{states('sensor.sma_dc_spanning_1')|float(0) |round(0)}}           {#- Voltage string 1 (V) -#}
+      &v8={{states('sensor.sma_dc_spanning_2')|float(0) |round(0)}}           {#- Voltage string 2 (V) -#}
+      &v9={{states('sensor.sma_dc_power_1')|float(0) |round(0)}}              {#- Power string 1 (W) -#}
+      &v10={{states('sensor.sma_dc_power_2')|float(0) |round(0)}}             {#- Power string 2 (W) -#}
+      &c1=1   
