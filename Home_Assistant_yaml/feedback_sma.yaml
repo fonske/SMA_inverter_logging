@@ -34,11 +34,11 @@ automation:
         metadata: {}
         data:
           value: >-
-            {% set p_max = 3680 -%}
-            {% set p_act = states('sensor.p1_meter_active_power')|float(default=p_max)  -%}
-            {% set c = states('sensor.sma_actueel')|float(default=p_max) -%}
+            {% set p_max = 1.500 -%}
+            {% set p_meter = states('sensor.p1_meter_active_power')|float(default=p_max) / 1000 -%}
+            {% set sma = states('sensor.sma_actueel')|float(default=p_max * 1000) / 1000 -%}
             {% set s = p_max / 100 -%}
-            {% set n = ((c + p_act) / s) | abs -%}
+            {% set n = ((sma + p_meter) / s) -%}
             {{ max( min(n, 100), 0)|round(0, 'ceil') }}
         target:
           entity_id: input_number.power_limit_slider_sma
