@@ -208,6 +208,7 @@ sensor:
             {% endif %}
         unit_of_measurement: "W"
         icon_template: mdi:flash
+        unique_id: sma_power
  
   - platform: template
     sensors:
@@ -221,6 +222,7 @@ sensor:
             {% endif %}
         unit_of_measurement: "kWh"
         icon_template: mdi:weather-sunny
+        unique_id: sma_energie_vandaag
 
       sma_inverter_status:        
         friendly_name: 'Omvormer Status'
@@ -235,6 +237,7 @@ sensor:
               Fout
             {% endif %}
         icon_template: mdi:state-machine
+        unique_id: sma_inverter_status
 
       sma_grid_contactor:        
         friendly_name: 'Grid relais'
@@ -245,6 +248,7 @@ sensor:
               Open
             {% endif %}
         icon_template: mdi:connection
+        unique_id: sma_grid_connector
 
 input_number:
   sma_power_limit_slider:
