@@ -27,7 +27,7 @@ rest_command:
     payload: >-
       d={{now().strftime("%Y%m%d")}}                                          {#- date -#}
       &t={{now().strftime("%H:%M")}}                                          {#- time -#}
-      &v1={{(states('sensor.sma_vandaag')|float(0)*1000) | int}}            {#- Energy generation (Wh) -#}
+      &v1={{(states('sensor.sma_vandaag')|float(0)*1000) | int}}              {#- Energy generation (Wh) -#}
       &v2={{states('sensor.sma_actueel')|float(0) |round(0)}}                 {#- Power generation (W) -#}
       &v5={{states('sensor.sma_temperatuur')|float(0) |round(1)}}             {#- Temperature (degr. C) -#}
       &v6={{states('sensor.sma_ac_spanning')|float(0) |round(0)}}             {#- AC voltage (V) -#}
