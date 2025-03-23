@@ -41,7 +41,7 @@ automation:
             {% set n = ((sma + p_meter) / s) -%}
             {{ max( min(n, 100), 0)|round(0, 'ceil') }}
         target:
-          entity_id: input_number.power_limit_slider_sma
+          entity_id: input_number.sma_power_limit_slider
       - delay:
           hours: 0
           minutes: 0
@@ -54,5 +54,5 @@ automation:
       sequence:
       - service: input_number.set_value
         data_template:
-          entity_id: input_number.power_limit_slider_sma
+          entity_id: input_number.sma_power_limit_slider
           value: 100
