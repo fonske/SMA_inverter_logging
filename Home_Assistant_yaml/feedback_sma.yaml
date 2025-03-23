@@ -34,7 +34,7 @@ automation:
         metadata: {}
         data:
           value: >-
-            {% set p_max = 1.500 -%}
+            {% set p_max = 5.000 -%}
             {% set p_meter = states('sensor.p1_meter_active_power')|float(default=p_max) / 1000 -%}
             {% set sma = states('sensor.sma_actueel')|float(default=p_max * 1000) / 1000 -%}
             {% set s = p_max / 100 -%}
