@@ -250,45 +250,21 @@ sensor:
         icon_template: mdi:connection
         unique_id: sma_grid_connector
 
-input_number:
-  sma_power_limit_slider:
-    name: SMA Power Limiet Slider
-    initial: 100
-    min: 0
-    max: 100
-    step: 1
-    unit_of_measurement: "%"
-
-automation:
-  - alias: SMA Power Limit
-    id: sma_power_limit
-    description: ''
-    trigger:
-      - platform: state
-        entity_id: input_number.sma_power_limit_slider
-    condition: []
-    action:
-      - service: modbus.write_register
-        data:
-          address: 40016
-          slave: 3
-          value: '{{ states("input_number.sma_power_limit_slider") }}'
-          hub: SMA1 # unique name
-    mode: single
-
-### or use:
-#automation:
-#  alias: Power Limit
-#  description: ''
-#  trigger:
-#    - platform: state
-#      entity_id: input_number.sma_power_limit_slider
-#  condition: []
-#  action:
-#    - service: modbus.write_register
-#      data:
-#        address: 40023
-#        slave: 3
-#        value: '{{ states("input_number.sma_power_limit_slider") |int *100 }}'
-#        hub: SMA1  # unique name
-#  mode: single
+template:
+  - number:
+      - name: SMA Power Limit Slider
+        unique_id: sma_power_limit_slider
+        icon: mdi:tune-variant
+        unit_of_measurement: "%"
+        state: "{{ states('sensor.sma_limit_percent') | float(0) }}"
+        set_value:
+          - service: modbus.write_register
+            data:
+              hub: SMA1
+              address: 40016
+              slave: 3
+              value: "{{ value | int }}"
+        step: 1
+        min: 0
+        max: 100
+        optimistic: true
