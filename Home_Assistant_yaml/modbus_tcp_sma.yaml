@@ -1,6 +1,6 @@
 # SMA inverter logging modbus TCP/IP
 #
-# Revision: v1.02 27/4/2025
+# Revision: v1.02 27/4/2026
 
 modbus:
   - name: SMA1
